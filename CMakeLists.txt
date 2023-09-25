@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   sensor_msgs
   geometry_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -109,7 +110,7 @@ catkin_package(
 #  LIBRARIES amr_hw_control
 #  CATKIN_DEPENDS _ roscpp
 #  DEPENDS system_lib
-CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs geometry_msgs
+CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs geometry_msgs message_runtime
 )
 
 ###########
@@ -122,6 +123,8 @@ include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
 )
+
+include_directories(include)
 
 add_executable(joy_to_twist src/joy_to_twist.cpp)
 
@@ -143,6 +146,14 @@ install(TARGETS twist_to_speed
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+## Add gtest based cpp test target and link libraries
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  add_rostest_gtest(test_joy_to_speed test/test_joy_to_twist.test test/test_twist_to_speed.cpp)
+  target_link_libraries(test_joy_to_speed ${catkin_LIBRARIES})
+endif()
+
+## Add rostest based cpp test target and link libraries
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/amr_hw_control.cpp

@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="joy" type="joy_node" name="joy_node" output="screen" />
+  <node pkg="amr_hw_control" type="joy_to_twist" name="joy_to_twist" output="screen" />
+  <test test-name="test_joy_to_speed"  pkg="amr_hw_control" type="test_joy_to_speed" />
+</launch>
