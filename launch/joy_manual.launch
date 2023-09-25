@@ -1,0 +1,7 @@
+<launch>
+
+  <node name="joy_pub" pkg="joy" type="joy_node" output="screen"/>
+  <node name="joy_to_twist" pkg="amr_hw_control" type="joy_to_twist" output="screen"/>
+  <node name="twist_to_speed" pkg="amr_hw_control" type="twist_to_speed" output="screen"/>
+
+</launch>
