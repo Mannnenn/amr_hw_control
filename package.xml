@@ -57,6 +57,10 @@
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>message_generation</build_export_depend>
   <build_export_depend>message_runtime</build_export_depend>
+  <build_export_depend>tf</build_export_depend>
+  <build_export_depend>tf2</build_export_depend>
+  <build_export_depend>tf2_ros</build_export_depend>
+  <build_export_depend>om_modbus_master</build_export_depend>
 
 
   <exec_depend>rospy</exec_depend>
@@ -66,6 +70,10 @@
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>message_generation</exec_depend>
   <exec_depend>message_runtime</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>tf2</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>om_modbus_master</exec_depend>
 
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
@@ -74,6 +82,10 @@
   <build_depend>geometry_msgs</build_depend>
   <build_depend>message_generation</build_depend>
   <build_depend>message_runtime</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>tf2</build_depend>
+  <build_depend>tf2_ros</build_depend>
+  <build_depend>om_modbus_master</build_depend>
 
   <test_depend>rosunit</test_depend>
   <test_depend>roslaunch</test_depend>

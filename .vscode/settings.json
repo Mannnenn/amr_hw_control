@@ -12,5 +12,12 @@
   "[python]": {
     "editor.defaultFormatter": "ms-python.autopep8"
   },
-  "python.formatting.provider": "none"
+  "python.formatting.provider": "none",
+  "files.associations": {
+    "array": "cpp",
+    "string": "cpp",
+    "string_view": "cpp",
+    "deque": "cpp",
+    "vector": "cpp"
+  }
 }

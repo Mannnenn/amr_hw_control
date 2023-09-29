@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(amr_hw_control)
-
+add_compile_options(-std=c++17)
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
 
@@ -14,6 +14,10 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   geometry_msgs
   message_generation
+  tf
+  tf2
+  tf2_ros
+  om_modbus_master
 )
 
 ## System dependencies are found with CMake's conventions
@@ -110,7 +114,7 @@ catkin_package(
 #  LIBRARIES amr_hw_control
 #  CATKIN_DEPENDS _ roscpp
 #  DEPENDS system_lib
-CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs geometry_msgs message_runtime
+CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs geometry_msgs message_runtime tf tf2 tf2_ros
 )
 
 ###########
@@ -139,6 +143,18 @@ install(TARGETS joy_to_twist
 add_executable(twist_to_speed src/twist_to_speed.cpp)
 
 target_link_libraries(twist_to_speed
+  ${catkin_LIBRARIES}
+)
+
+add_executable(angular_position_to_odom src/angular_position_to_odom.cpp)
+
+target_link_libraries(angular_position_to_odom
+  ${catkin_LIBRARIES}
+)
+
+add_executable(read_write_motors src/read_write_motors.cpp)
+
+target_link_libraries(read_write_motors
   ${catkin_LIBRARIES}
 )
 
