@@ -1,20 +1,17 @@
 #include "amr_hw_control/twist_to_speed.hpp"
 
 Twist2Float32::Twist2Float32() {
-    command_left.data = 0.0;
-    command_right.data = 0.0;
+    motor_command.data = {0,0};
     received_twist = nullptr;
     ros::NodeHandle nh;
     sub = nh.subscribe("/cmd_vel", 1, &Twist2Float32::callback, this);
-    pub_right = nh.advertise<std_msgs::Float32>("right_motor/cmd_vel", 10);
-    pub_left = nh.advertise<std_msgs::Float32>("left_motor/cmd_vel", 10);
+    pub_motor_command = nh.advertise<std_msgs::Float32MultiArray>("motor_command", 10);
 }
 
 void Twist2Float32::callback(const geometry_msgs::Twist::ConstPtr& message) {
     received_twist = message;
-    std::tie(command_right.data, command_left.data) = twist2rpm(*received_twist);
-    pub_right.publish(command_right);
-    pub_left.publish(command_left);
+    std::tie(motor_command.data[0], motor_command.data[1]) = twist2rpm(*received_twist);
+    pub_motor_command.publish(motor_command);
 }
 
 std::tuple<float, float> Twist2Float32::twist2rpm(const geometry_msgs::Twist& received_data) {
@@ -23,9 +20,9 @@ std::tuple<float, float> Twist2Float32::twist2rpm(const geometry_msgs::Twist& re
     int gear_ratio;
 
     ros::NodeHandle nh;
-    nh.param<float>("wheel_size", wheel_size, 0.075);
-    nh.param<float>("axle_length", axle_length, 0.35);
-    nh.param<int>("gear_ratio", gear_ratio, 19);
+    nh.param<float>("wheel_size", wheel_size, 0.5);
+    nh.param<float>("axle_length", axle_length, 1.0);
+    nh.param<int>("gear_ratio", gear_ratio, 1);
 
     float v = received_data.linear.x; // (m/s)
     float omega = received_data.angular.z; // (rad/s)
