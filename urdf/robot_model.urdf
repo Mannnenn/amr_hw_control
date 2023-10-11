@@ -150,7 +150,7 @@
   </link>
 
   <!-- Lidarの作成 -->
-  <link name="lidar_link">
+  <link name="laser">
     <visual>
       <geometry>
         <cylinder radius="0.05" length="0.05"/>
@@ -172,6 +172,10 @@
         <inertia ixx="0.125" iyy="0.125" izz="0.188" ixy="0" ixz="0" iyz="0"/>
     </inertial>
   </link>
+
+  <link name="velodyne"/>
+  <link name="livox_frame"/>
+
 <!-- ################# ジョイント設定 ################## -->
 
 	<joint name="base_joint" type="fixed">
@@ -215,7 +219,19 @@
 	<joint name="lidar_joint" type="fixed">
     <origin xyz="0.0 0.0 0.2" rpy="0 0 0"/>
     <parent link="body"/>
-    <child link="lidar_link"/>
+    <child link="laser"/>
 	</joint>
+
+  <joint name="velodyne_joint" type="fixed">
+    <parent link="laser"/>
+    <child link="velodyne"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+  </joint>
+
+  <joint name="livox_joint" type="fixed">
+    <parent link="laser"/>
+    <child link="livox_frame"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+  </joint>
 
 </robot>
