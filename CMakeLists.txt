@@ -158,6 +158,12 @@ target_link_libraries(read_write_motors
   ${catkin_LIBRARIES}
 )
 
+add_executable(dummy_node src/dummy_node.cpp)
+
+target_link_libraries(dummy_node
+  ${catkin_LIBRARIES}
+)
+
 install(TARGETS twist_to_speed
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

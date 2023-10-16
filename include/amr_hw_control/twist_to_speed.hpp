@@ -9,7 +9,7 @@ class Twist2Float32 {
 public:
     Twist2Float32();
     void callback(const geometry_msgs::Twist::ConstPtr& message);
-    std::tuple<float, float> twist2rpm(const geometry_msgs::Twist& received_data);
+    std::tuple<float, float> twist2vel(const geometry_msgs::Twist& received_data);
 
 private:
     std_msgs::Float32MultiArray motor_command;

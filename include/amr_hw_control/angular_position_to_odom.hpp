@@ -13,11 +13,11 @@ class OdomPublisher {
 public:
     OdomPublisher();
 
-    void motorCommandCallback(const std_msgs::Float32MultiArray::ConstPtr& msg);
+    void motorResponseCallback(const std_msgs::Float32MultiArray::ConstPtr& msg);
 
 private:
     ros::NodeHandle nh;
-    ros::Subscriber sub_motor_command;
+    ros::Subscriber sub_motor_response;
     ros::Publisher pub_odom;
     ros::Publisher joint_state_pub; // Declare joint state publisher
     float x, y, theta;

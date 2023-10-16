@@ -10,32 +10,27 @@ Twist2Float32::Twist2Float32() {
 
 void Twist2Float32::callback(const geometry_msgs::Twist::ConstPtr& message) {
     received_twist = message;
-    std::tie(motor_command.data[0], motor_command.data[1]) = twist2rpm(*received_twist);
+    std::tie(motor_command.data[0], motor_command.data[1]) = twist2vel(*received_twist);
     pub_motor_command.publish(motor_command);
 }
 
-std::tuple<float, float> Twist2Float32::twist2rpm(const geometry_msgs::Twist& received_data) {
+std::tuple<float, float> Twist2Float32::twist2vel(const geometry_msgs::Twist& received_data) {
     float wheel_size;
     float axle_length;
-    int gear_ratio;
-
     ros::NodeHandle nh;
-    nh.param<float>("wheel_size", wheel_size, 0.5);
+    nh.param<float>("wheel_size", wheel_size, 1.0);
     nh.param<float>("axle_length", axle_length, 1.0);
-    nh.param<int>("gear_ratio", gear_ratio, 1);
 
     float v = received_data.linear.x; // (m/s)
     float omega = received_data.angular.z; // (rad/s)
 
-    float v_r = (omega * axle_length + 2 * v) / 2;
-    float v_l = (omega * axle_length - 2 * v) / (-2);
+    float v_r = omega * (axle_length / 2) + v; // m/s
+    float v_l = - omega * (axle_length / 2) + v; // m/s
 
-    v_r = v_r / (wheel_size * 2 * 3.14); // wheel_speed(1/s)
-    v_l = v_l / (wheel_size * 2 * 3.14); // wheel_speed(1/s)
-    float r_rpm = 60 * v_r * gear_ratio; // gear rate
-    float l_rpm = 60 * v_l * gear_ratio; // gear rate
+    v_r = v_r / (wheel_size / 2); // wheel_speed(rad/s)
+    v_l = v_l / (wheel_size / 2); // wheel_speed(rad/s)
 
-    return std::make_tuple(r_rpm, l_rpm);
+    return std::make_tuple(v_r, v_l);
 }
 
 int main(int argc, char** argv) {

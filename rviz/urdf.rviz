@@ -80,16 +80,24 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        laser:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         lidar_base:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        lidar_link:
+        livox_frame:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: true
+        velodyne:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         wheel_left:
           Alpha: 1
           Show Axes: false
@@ -121,9 +129,15 @@ Visualization Manager:
           Value: true
         caster_forward:
           Value: true
+        laser:
+          Value: true
         lidar_base:
           Value: true
-        lidar_link:
+        livox_frame:
+          Value: true
+        odom:
+          Value: true
+        velodyne:
           Value: true
         wheel_left:
           Value: true
@@ -136,27 +150,31 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        base_link:
-          body:
-            caster_backward:
-              {}
-            caster_forward:
-              {}
-            lidar_base:
-              {}
-            lidar_link:
-              {}
-            wheel_left:
-              {}
-            wheel_right:
-              {}
+        odom:
+          base_link:
+            body:
+              caster_backward:
+                {}
+              caster_forward:
+                {}
+              laser:
+                livox_frame:
+                  {}
+                velodyne:
+                  {}
+              lidar_base:
+                {}
+              wheel_left:
+                {}
+              wheel_right:
+                {}
       Update Interval: 0
       Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: base_link
+    Fixed Frame: odom
     Frame Rate: 30
   Name: root
   Tools:
@@ -180,7 +198,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.1567115783691406
+      Distance: 5.339938640594482
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -196,9 +214,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.695398211479187
+      Pitch: 1.0253978967666626
       Target Frame: <Fixed Frame>
-      Yaw: 0.8203979730606079
+      Yaw: 2.350398063659668
     Saved: ~
 Window Geometry:
   Displays:

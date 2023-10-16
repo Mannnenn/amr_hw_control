@@ -8,8 +8,8 @@ OdomPublisher::OdomPublisher() {
     last_time = ros::Time::now();
 
 
-    // Subscribe to motor command topic
-    sub_motor_command = nh.subscribe("motor_command", 1, &OdomPublisher::motorCommandCallback, this);
+    // Subscribe to motor response topic
+    sub_motor_response = nh.subscribe("motor_response", 1, &OdomPublisher::motorResponseCallback, this);
 
     // Advertise odom topic
     pub_odom = nh.advertise<nav_msgs::Odometry>("odom", 10);
@@ -17,24 +17,22 @@ OdomPublisher::OdomPublisher() {
 
 }
 
-void OdomPublisher::motorCommandCallback(const std_msgs::Float32MultiArray::ConstPtr& msg) {
+void OdomPublisher::motorResponseCallback(const std_msgs::Float32MultiArray::ConstPtr& msg) {
     // Get wheel_size and wheel_length from rosparam
     float wheel_size;
     float axle_length;
-    int gear_ratio;
 
     ros::NodeHandle nh;
-    nh.param<float>("wheel_size", wheel_size, 0.5);
+    nh.param<float>("wheel_size", wheel_size, 1.0);
     nh.param<float>("axle_length", axle_length, 1.0);
-    nh.param<int>("gear_ratio", gear_ratio, 1);
 
     // Get motor angular velocity
-    float left_rpm = msg->data[0];
-    float right_rpm = msg->data[1];
+    float right_vel = msg->data[0];
+    float left_vel = msg->data[1];
 
     // Calculate linear and angular velocity
-    float linear_velocity = (left_rpm + right_rpm) * wheel_size * M_PI / (2.0 * gear_ratio);
-    float angular_velocity = (right_rpm - left_rpm) * wheel_size * M_PI / (axle_length * gear_ratio);
+    float linear_velocity = (left_vel + right_vel) * (wheel_size / 2) * M_PI / (2.0);
+    float angular_velocity = (right_vel - left_vel) * (wheel_size / 2)* M_PI / (axle_length);
 
     // Calculate time elapsed since last update
     ros::Time current_time = ros::Time::now();
@@ -75,10 +73,10 @@ void OdomPublisher::motorCommandCallback(const std_msgs::Float32MultiArray::Cons
     joint_state.header.stamp = current_time;
     joint_state.name.push_back("wheel_left_joint");
     joint_state.name.push_back("wheel_right_joint");
-    joint_state.position.push_back(left_rpm * dt * 2.0 * M_PI / 60.0);
-    joint_state.position.push_back(right_rpm * dt * 2.0 * M_PI / 60.0);
-    joint_state.velocity.push_back(left_rpm * 2.0 * M_PI / 60.0);
-    joint_state.velocity.push_back(right_rpm * 2.0 * M_PI / 60.0);
+    joint_state.position.push_back(left_vel * dt * 2.0 * M_PI / 60.0);
+    joint_state.position.push_back(right_vel * dt * 2.0 * M_PI / 60.0);
+    joint_state.velocity.push_back(left_vel * 2.0 * M_PI / 60.0);
+    joint_state.velocity.push_back(right_vel * 2.0 * M_PI / 60.0);
     joint_state.effort.push_back(0.0);
     joint_state.effort.push_back(0.0);
     joint_state_pub.publish(joint_state);
