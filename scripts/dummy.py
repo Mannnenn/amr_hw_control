@@ -13,7 +13,7 @@ class DummyNode:
         # Subscribe to "motor_command" topic and pass callback function
         self.sub = rospy.Subscriber(
             "motor_command", Float32MultiArray, self.callback)
-        self.rate = rospy.Rate(10)  # 10Hz
+        self.rate = rospy.Rate(20)  # 10Hz
 
     def callback(self, msg):
         # Update global variables with received message
@@ -32,5 +32,4 @@ if __name__ == '__main__':
         response_msg = Float32MultiArray()
         response_msg.data = [r_vel, l_vel]
         pub.publish(response_msg)
-
-        rospy.sleep(0.05)
+        node.rate.sleep()

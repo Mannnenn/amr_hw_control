@@ -100,7 +100,7 @@ def setShareReadWriteData():
     msg.write_addr = 0x0990     # 書き込みの起点：Share Read data[0]
     msg.write_num = 24  # 書き込むデータ数*軸数=24
     msg.data[0] = 45    # Share Read data[0] → DDO運転方式
-    msg.data[1] = 46    # Share Read data[1] → DDO位置
+    msg.data[1] = 50    # Share Read data[1] → DDO trq lim
     msg.data[2] = 47    # Share Read data[2] → DDO速度
     msg.data[3] = 48    # Share Read data[3] → DDO加速レート
     msg.data[4] = 49    # Share Read data[4] → DDO減速レート
@@ -133,7 +133,7 @@ def setShareReadWriteData():
     msg.write_addr = 0x0990     # 書き込みの起点：Share Read data[0]
     msg.write_num = 24  # 書き込むデータ数*軸数=24
     msg.data[0] = 45    # Share Read data[0] → DDO運転方式
-    msg.data[1] = 46    # Share Read data[1] → DDO位置
+    msg.data[1] = 50    # Share Read data[1] → DDO trq lim
     msg.data[2] = 47    # Share Read data[2] → DDO速度
     msg.data[3] = 48    # Share Read data[3] → DDO加速レート
     msg.data[4] = 49    # Share Read data[4] → DDO減速レート
@@ -187,7 +187,7 @@ def main():
     msg.func_code = 1     # ファンクションコード: 0:Read 1:Write 2:Read/Write
     msg.write_addr = 124  # アドレス指定： ドライバ入力指令
     msg.write_num = 1     # 書き込みデータ数: 1
-    msg.data[0] = 1       # S-ONを立ち上げる
+    msg.data[0] = 0       # S-ONを立ち上げる
     pub.publish(msg)      # 配信
     wait(0.5)
 
@@ -195,7 +195,7 @@ def main():
     msg.func_code = 1     # ファンクションコード: 0:Read 1:Write 2:Read/Write
     msg.write_addr = 124  # アドレス指定： ドライバ入力指令
     msg.write_num = 1     # 書き込みデータ数: 1
-    msg.data[0] = 1       # S-ONを立ち上げる
+    msg.data[0] = 0       # S-ONを立ち上げる
     pub.publish(msg)      # 配信
     wait(0.5)
     print("Set S-ON")

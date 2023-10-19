@@ -33,7 +33,6 @@ pub = None
 msg = om_query()
 gMotor_pos = 0
 gMotor_speed = 0
-gDoesWorkTimer = False
 
 right_com = 0
 left_com = 0
@@ -71,12 +70,13 @@ def resCallback(res):
         data_num = int(msg.read_num)    # データ数
         global right_res
         global left_res
-        right_res = res.data[0] / (286 / 2) * (2 * 3.14)
-        left_res = res.data[1] / (286 / 2) * (2 * 3.14)
+        e_rate = (2 * 3.1415) / 1200
+        right_res = res.data[0] * e_rate
+        left_res = res.data[1] * e_rate
 
         for axis in range(axis_num):
             print('{0}: {1}[rad/s], {2}[rad/s]'.format(datetime.datetime.now(),
-                  res.data[0], res.data[1]))  # [0]:1軸目の検出速度、[1]:2軸目の検出速度
+                  right_res, left_res))  # [0]:1軸目の検出速度、[1]:2軸目の検出速度
 
 # パラメータサーバとresponseのslave_idから、現在ID Shareモードか調べる
 
@@ -99,24 +99,11 @@ def wait(t):
     while (gState_driver == 1):
         pass
 
-# 一定周期で実行する処理
-
-
-def timeProcess(event):
-    global gDoesWorkTimer
-    if gDoesWorkTimer:
-        msg.slave_id = 32       # スレーブID指定(ID Shareモードのときはglobal_idとみなされる)
-        msg.func_code = 0       # 0:Read
-        msg.read_addr = 0x000E  # 読み出すアドレスの起点
-        msg.read_num = 2        # 各軸1個ずつ
-        pub.publish(msg)        # 配信する
-
 
 def main():
     global gState_mes
     global gState_error
     global pub
-    global gDoesWorkTimer
 
     global right_com
     global left_com
@@ -146,13 +133,11 @@ def main():
 
     wait(0.5)
 
-    # 一定周期でtimeProcessを実行する
-    gDoesWorkTimer = True
-    rospy.Timer(rospy.Duration(0.5), timeProcess)
+    m_rate = (1000 * 20) / (3.1415 * 2)
 
     # ID Shareモードで各モーターを運転する
     # 5Hzで運転指令を送信する
-    rate = rospy.Rate(2)
+    rate = rospy.Rate(15)
     while not rospy.is_shutdown():
         print("Move at left_com: %f, right_com: %f" %
               (left_com, right_com))
@@ -162,26 +147,30 @@ def main():
         msg.write_num = 12           # 全軸合わせたデータ項目数を代入する
         # 1軸目のデータ
         msg.data[0] = 16        # DDO運転方式 16:連続運転(速度制御)
-        msg.data[1] = 0         # DDO運転位置(初期単位：1step = 0.01deg)連続運転(速度制御)なので無関係
-        msg.data[2] = round(1000 * left_com * 60 / (3.14 * 2 * 1.3)
+        msg.data[1] = 1000         # DDO trq lim
+        msg.data[2] = round(right_com * m_rate
                             )     # DDO運転速度(初期単位：r/min)
-        msg.data[3] = 50000      # DDO加速レート(初期単位：ms)
-        msg.data[4] = 50000      # DDO減速レート(初期単位：ms)
+        msg.data[3] = 5000      # DDO加速レート(初期単位：ms)
+        msg.data[4] = 5000      # DDO減速レート(初期単位：ms)
         msg.data[5] = 1         # DDO運転トリガ設定
         # 2軸目のデータ
         msg.data[6] = 16        # DDO運転方式 16:連続運転(速度制御)
-        msg.data[7] = 0         # DDO運転位置(初期単位：1step = 0.01deg)連続運転(速度制御)なので無関係
-        # DDO運転速度(初期単位：r/min)
-        msg.data[8] = round(1000 * right_com * 60 / (3.14 * 2 * 1.3))
-        msg.data[9] = 50000      # DDO加速レート(初期単位：ms)
-        msg.data[10] = 50000     # DDO減速レート(初期単位：ms)
+        msg.data[7] = 1000         # DDDO trq lim
+        msg.data[8] = round(left_com * m_rate
+                            )  # DDO運転速度(初期単位：r/min)
+        msg.data[9] = 5000      # DDO加速レート(初期単位：ms)
+        msg.data[10] = 5000     # DDO減速レート(初期単位：ms)
         msg.data[11] = 1        # DDO運転トリガ設定
-        # 配信
-        gDoesWorkTimer = False
-        wait(0.03)
         pub.publish(msg)
-        wait(0.03)
-        gDoesWorkTimer = True
+
+        wait(0.027)
+
+        # read speed
+        msg.slave_id = 32       # スレーブID指定(ID Shareモードのときはglobal_idとみなされる)
+        msg.func_code = 0       # 0:Read
+        msg.read_addr = 0x000E  # 読み出すアドレスの起点
+        msg.read_num = 2        # 各軸1個ずつ
+        pub.publish(msg)        # 配信する
 
         response_msg = Float32MultiArray()
         response_msg.data = [right_res, left_res]

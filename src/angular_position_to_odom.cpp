@@ -7,6 +7,8 @@ OdomPublisher::OdomPublisher() {
     theta = 0.0;
     last_time = ros::Time::now();
 
+    left_pos = 0.0;
+    right_pos = 0.0;
 
     // Subscribe to motor response topic
     sub_motor_response = nh.subscribe("motor_response", 1, &OdomPublisher::motorResponseCallback, this);
@@ -23,16 +25,16 @@ void OdomPublisher::motorResponseCallback(const std_msgs::Float32MultiArray::Con
     float axle_length;
 
     ros::NodeHandle nh;
-    nh.param<float>("wheel_size", wheel_size, 1.0);
-    nh.param<float>("axle_length", axle_length, 1.0);
+    nh.param<float>("wheel_size", wheel_size, 0.286);
+    nh.param<float>("axle_length", axle_length, 0.394);
 
     // Get motor angular velocity
     float right_vel = msg->data[0];
     float left_vel = msg->data[1];
 
     // Calculate linear and angular velocity
-    float linear_velocity = (left_vel + right_vel) * (wheel_size / 2) * M_PI / (2.0);
-    float angular_velocity = (right_vel - left_vel) * (wheel_size / 2)* M_PI / (axle_length);
+    float linear_velocity = (left_vel + right_vel) * (wheel_size / 2) / (2.0);
+    float angular_velocity = (right_vel - left_vel) * (wheel_size / 2) / (axle_length);
 
     // Calculate time elapsed since last update
     ros::Time current_time = ros::Time::now();
@@ -67,18 +69,17 @@ void OdomPublisher::motorResponseCallback(const std_msgs::Float32MultiArray::Con
     odom_trans.transform.rotation = odom_quat;
     odom_broadcaster.sendTransform(odom_trans);
 
-
     // Publish joint state message
+    left_pos -= left_vel * dt;
+    right_pos -= right_vel * dt;
+    left_pos = angles::normalize_angle(left_pos);
+    right_pos = angles::normalize_angle(right_pos);
     sensor_msgs::JointState joint_state;
     joint_state.header.stamp = current_time;
     joint_state.name.push_back("wheel_left_joint");
     joint_state.name.push_back("wheel_right_joint");
-    joint_state.position.push_back(left_vel * dt * 2.0 * M_PI / 60.0);
-    joint_state.position.push_back(right_vel * dt * 2.0 * M_PI / 60.0);
-    joint_state.velocity.push_back(left_vel * 2.0 * M_PI / 60.0);
-    joint_state.velocity.push_back(right_vel * 2.0 * M_PI / 60.0);
-    joint_state.effort.push_back(0.0);
-    joint_state.effort.push_back(0.0);
+    joint_state.position.push_back(left_pos);
+    joint_state.position.push_back(right_pos);
     joint_state_pub.publish(joint_state);
 }
 

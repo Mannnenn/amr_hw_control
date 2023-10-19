@@ -7,6 +7,8 @@
 #include <std_msgs/Float32MultiArray.h>
 #include <tf/transform_datatypes.h>
 #include <sensor_msgs/JointState.h>
+#include <angles/angles.h>
+
 
 
 class OdomPublisher {
@@ -21,6 +23,7 @@ private:
     ros::Publisher pub_odom;
     ros::Publisher joint_state_pub; // Declare joint state publisher
     float x, y, theta;
+    float left_pos, right_pos;
     ros::Time last_time;
     tf::TransformBroadcaster odom_broadcaster;
     tf::TransformBroadcaster tf_broadcaster;
