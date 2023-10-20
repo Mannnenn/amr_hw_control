@@ -1,5 +1,10 @@
 <launch>
 
+  <include file="$(find om_modbus_master)/launch/om_modbusRTU.launch"/>
+
+  <node name="init_motor" pkg="amr_hw_control" type="bringup_motor.py" output="screen"/>
+  <node name="drive_motor" pkg="amr_hw_control" type="motor_drive.py" output="screen"/>
+
 
   <node name="joy_pub" pkg="joy" type="joy_node" output="screen"/>
   <node name="joy_to_twist" pkg="amr_hw_control" type="joy_to_twist" output="screen"/>
@@ -15,9 +20,10 @@
   <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
   <param name="use_gui" value="$(arg gui)"/>
 
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+
+  <param name="s_on" value="0"/>
+
 
 
 </launch>

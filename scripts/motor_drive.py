@@ -74,9 +74,8 @@ def resCallback(res):
         right_res = res.data[0] * e_rate
         left_res = res.data[1] * e_rate
 
-        for axis in range(axis_num):
-            print('{0}: {1}[rad/s], {2}[rad/s]'.format(datetime.datetime.now(),
-                  right_res, left_res))  # [0]:1軸目の検出速度、[1]:2軸目の検出速度
+        # for axis in range(axis_num):
+        #    print('{0}: {1}[rad/s], {2}[rad/s]'.format(datetime.datetime.now(),right_res, left_res))  # [0]:1軸目の検出速度、[1]:2軸目の検出速度
 
 # パラメータサーバとresponseのslave_idから、現在ID Shareモードか調べる
 
@@ -101,6 +100,9 @@ def wait(t):
 
 
 def main():
+
+    wait(8)  # Wait for init motor
+
     global gState_mes
     global gState_error
     global pub
@@ -116,7 +118,7 @@ def main():
     MESSAGE_ERROR = 2
     EXCEPTION_RESPONSE = 2
 
-    rospy.init_node("blv_idshare_sample1_1", anonymous=True)    # 上位ノード作成
+    rospy.init_node("blv_speed_controller", anonymous=True)    # 上位ノード作成
     # masterにメッセージを渡すpublisher作成
     pub = rospy.Publisher("om_query1", om_query, queue_size=10)
     # 通信状態に関するメッセージを受け取るsubscriber作成
@@ -139,8 +141,7 @@ def main():
     # 5Hzで運転指令を送信する
     rate = rospy.Rate(15)
     while not rospy.is_shutdown():
-        print("Move at left_com: %f, right_com: %f" %
-              (left_com, right_com))
+        # print("Move at left_com: %f, right_com: %f" %(left_com, right_com))
         msg.slave_id = 32           # スレーブID指定(ID Shareモードのときはglobal_idとみなされる)
         msg.func_code = 1           # 0:read 1:write 2:read/write
         msg.write_addr = 0x0000     # 書き込むアドレスの起点
@@ -150,16 +151,16 @@ def main():
         msg.data[1] = 1000         # DDO trq lim
         msg.data[2] = round(right_com * m_rate
                             )     # DDO運転速度(初期単位：r/min)
-        msg.data[3] = 5000      # DDO加速レート(初期単位：ms)
-        msg.data[4] = 5000      # DDO減速レート(初期単位：ms)
+        msg.data[3] = 50000      # DDO加速レート(初期単位：ms)
+        msg.data[4] = 50000      # DDO減速レート(初期単位：ms)
         msg.data[5] = 1         # DDO運転トリガ設定
         # 2軸目のデータ
         msg.data[6] = 16        # DDO運転方式 16:連続運転(速度制御)
         msg.data[7] = 1000         # DDDO trq lim
         msg.data[8] = round(left_com * m_rate
                             )  # DDO運転速度(初期単位：r/min)
-        msg.data[9] = 5000      # DDO加速レート(初期単位：ms)
-        msg.data[10] = 5000     # DDO減速レート(初期単位：ms)
+        msg.data[9] = 50000      # DDO加速レート(初期単位：ms)
+        msg.data[10] = 50000     # DDO減速レート(初期単位：ms)
         msg.data[11] = 1        # DDO運転トリガ設定
         pub.publish(msg)
 

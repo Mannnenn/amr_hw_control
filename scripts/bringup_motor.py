@@ -33,7 +33,6 @@ pub = None
 msg = om_query()
 gMotor_pos = 0
 gMotor_speed = 0
-gDoesWorkTimer = False
 
 
 # ドライバ状態のコールバック関数
@@ -113,7 +112,7 @@ def setShareReadWriteData():
     msg.data[11] = 0    # Share Read data[11] →
 
     msg.data[12] = 45   # Share Write data[0] → DDO運転方式
-    msg.data[13] = 46   # Share Write data[1] → DDO位置
+    msg.data[13] = 50   # Share Write data[1] → DDO位置
     msg.data[14] = 47   # Share Write data[2] → DDO速度
     msg.data[15] = 48   # Share Write data[3] → DDO加速レート
     msg.data[16] = 49   # Share Write data[4] → DDO減速レート
@@ -146,7 +145,7 @@ def setShareReadWriteData():
     msg.data[11] = 0    # Share Read data[11] →
 
     msg.data[12] = 45   # Share Write data[0] → DDO運転方式
-    msg.data[13] = 46   # Share Write data[1] → DDO位置
+    msg.data[13] = 50   # Share Write data[1] → DDO位置
     msg.data[14] = 47   # Share Write data[2] → DDO速度
     msg.data[15] = 48   # Share Write data[3] → DDO加速レート
     msg.data[16] = 49   # Share Write data[4] → DDO減速レート
@@ -163,15 +162,17 @@ def setShareReadWriteData():
 
 
 def main():
+
+    wait(1)  # Wait for connection
+
     global gState_mes
     global gState_error
     global pub
-    global gDoesWorkTimer
 
     MESSAGE_ERROR = 2
     EXCEPTION_RESPONSE = 2
 
-    rospy.init_node("blv_idshare_sample1_1", anonymous=True)    # 上位ノード作成
+    rospy.init_node("blv_bring_up", anonymous=True)    # 上位ノード作成
     # masterにメッセージを渡すpublisher作成
     pub = rospy.Publisher("om_query1", om_query, queue_size=1)
     # 通信状態に関するメッセージを受け取るsubscriber作成
@@ -182,12 +183,29 @@ def main():
     # ユニキャストモードで通信するため、global_idを-1に設定する
     rospy.set_param("/om_modbusRTU_1/global_id", "-1")
 
+    # Set voltage param
+    msg.slave_id = 1      # スレーブID
+    msg.func_code = 1     # ファンクションコード: 0:Read 1:Write 2:Read/Write
+    msg.write_addr = 0x47B3  # アドレス指定： ドライバ入力指令
+    msg.write_num = 1     # 書き込みデータ数: 1
+    msg.data[0] = 240       # S-ONを立ち上げる
+    pub.publish(msg)      # 配信
+    wait(0.5)
+
+    msg.slave_id = 2      # スレーブID
+    msg.func_code = 1     # ファンクションコード: 0:Read 1:Write 2:Read/Write
+    msg.write_addr = 0x47B3  # アドレス指定： ドライバ入力指令
+    msg.write_num = 1     # 書き込みデータ数: 1
+    msg.data[0] = 240       # S-ONを立ち上げる
+    pub.publish(msg)      # 配信
+    wait(0.5)
+
     # 運転指令(S-ONをONする)
     msg.slave_id = 1      # スレーブID
     msg.func_code = 1     # ファンクションコード: 0:Read 1:Write 2:Read/Write
     msg.write_addr = 124  # アドレス指定： ドライバ入力指令
     msg.write_num = 1     # 書き込みデータ数: 1
-    msg.data[0] = 0       # S-ONを立ち上げる
+    msg.data[0] = 1       # S-ONを立ち上げる
     pub.publish(msg)      # 配信
     wait(0.5)
 
@@ -195,7 +213,7 @@ def main():
     msg.func_code = 1     # ファンクションコード: 0:Read 1:Write 2:Read/Write
     msg.write_addr = 124  # アドレス指定： ドライバ入力指令
     msg.write_num = 1     # 書き込みデータ数: 1
-    msg.data[0] = 0       # S-ONを立ち上げる
+    msg.data[0] = 1       # S-ONを立ち上げる
     pub.publish(msg)      # 配信
     wait(0.5)
     print("Set S-ON")
@@ -213,8 +231,29 @@ def main():
 
     wait(0.5)
 
+    msg.slave_id = 32           # スレーブID指定(ID Shareモードのときはglobal_idとみなされる)
+    msg.func_code = 1           # 0:read 1:write 2:read/write
+    msg.write_addr = 0x0000     # 書き込むアドレスの起点
+    msg.write_num = 12           # 全軸合わせたデータ項目数を代入する
+    # 1軸目のデータ
+    msg.data[0] = 16        # DDO運転方式 16:連続運転(速度制御)
+    msg.data[1] = 1000         # DDO trq lim
+    msg.data[2] = 0      # DDO運転速度(初期単位：r/min)
+    msg.data[3] = 5000      # DDO加速レート(初期単位：ms)
+    msg.data[4] = 5000      # DDO減速レート(初期単位：ms)
+    msg.data[5] = 1         # DDO運転トリガ設定
+    # 2軸目のデータ
+    msg.data[6] = 16        # DDO運転方式 16:連続運転(速度制御)
+    msg.data[7] = 1000         # DDDO trq lim
+    msg.data[8] = 0  # DDO運転速度(初期単位：r/min)
+    msg.data[9] = 5000      # DDO加速レート(初期単位：ms)
+    msg.data[10] = 5000     # DDO減速レート(初期単位：ms)
+    msg.data[11] = 1        # DDO運転トリガ設定
+    pub.publish(msg)
+
+    wait(0.5)
+
     print("END")
-    rospy.spin()
 
 
 if __name__ == '__main__':
