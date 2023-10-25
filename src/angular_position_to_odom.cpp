@@ -26,7 +26,7 @@ void OdomPublisher::motorResponseCallback(const std_msgs::Float32MultiArray::Con
 
     ros::NodeHandle nh;
     nh.param<float>("wheel_size", wheel_size, 0.286);
-    nh.param<float>("axle_length", axle_length, 0.394);
+    nh.param<float>("axle_length", axle_length, 0.39);
 
     // Get motor angular velocity
     float right_vel = msg->data[0];

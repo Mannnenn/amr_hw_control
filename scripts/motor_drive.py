@@ -152,7 +152,7 @@ def main():
         msg.data[2] = round(right_com * m_rate
                             )     # DDO運転速度(初期単位：r/min)
         msg.data[3] = 50000      # DDO加速レート(初期単位：ms)
-        msg.data[4] = 50000      # DDO減速レート(初期単位：ms)
+        msg.data[4] = 80000      # DDO減速レート(初期単位：ms)
         msg.data[5] = 1         # DDO運転トリガ設定
         # 2軸目のデータ
         msg.data[6] = 16        # DDO運転方式 16:連続運転(速度制御)
@@ -160,7 +160,7 @@ def main():
         msg.data[8] = round(left_com * m_rate
                             )  # DDO運転速度(初期単位：r/min)
         msg.data[9] = 50000      # DDO加速レート(初期単位：ms)
-        msg.data[10] = 50000     # DDO減速レート(初期単位：ms)
+        msg.data[10] = 80000     # DDO減速レート(初期単位：ms)
         msg.data[11] = 1        # DDO運転トリガ設定
         pub.publish(msg)
 

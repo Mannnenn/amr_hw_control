@@ -201,11 +201,12 @@ def main():
     wait(0.5)
 
     # 運転指令(S-ONをONする)
+    s_on = rospy.get_param("s_on")
     msg.slave_id = 1      # スレーブID
     msg.func_code = 1     # ファンクションコード: 0:Read 1:Write 2:Read/Write
     msg.write_addr = 124  # アドレス指定： ドライバ入力指令
     msg.write_num = 1     # 書き込みデータ数: 1
-    msg.data[0] = 1       # S-ONを立ち上げる
+    msg.data[0] = s_on       # S-ONを立ち上げる
     pub.publish(msg)      # 配信
     wait(0.5)
 
@@ -213,7 +214,7 @@ def main():
     msg.func_code = 1     # ファンクションコード: 0:Read 1:Write 2:Read/Write
     msg.write_addr = 124  # アドレス指定： ドライバ入力指令
     msg.write_num = 1     # 書き込みデータ数: 1
-    msg.data[0] = 1       # S-ONを立ち上げる
+    msg.data[0] = s_on       # S-ONを立ち上げる
     pub.publish(msg)      # 配信
     wait(0.5)
     print("Set S-ON")

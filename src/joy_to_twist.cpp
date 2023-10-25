@@ -15,7 +15,7 @@ void control(const sensor_msgs::Joy::ConstPtr& msg, ros::Publisher twist_pub) {
 
     geometry_msgs::Twist t; // Twistのインスタンスを生成
 
-    t.angular.z = velocity[0] + right - left;
+    t.angular.z = velocity[0] - right + left;
     t.linear.x = velocity[1] * 0.75 + ((float)front) / 4 - ((float)back) / 4; // twistにjoyから取得したデータを当てはめる
 
     twist_pub.publish(t); // twistを配信
