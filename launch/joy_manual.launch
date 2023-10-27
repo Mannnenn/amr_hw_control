@@ -1,29 +1,23 @@
 <launch>
 
+  <param name="s_on" value="1"/>
   <include file="$(find om_modbus_master)/launch/om_modbusRTU.launch"/>
-
   <node name="init_motor" pkg="amr_hw_control" type="bringup_motor.py" output="screen"/>
   <node name="drive_motor" pkg="amr_hw_control" type="motor_drive.py" output="screen"/>
 
 
+  <rosparam command="load" file="$(find amr_hw_control)/config/params.yaml"/>
   <node name="joy_pub" pkg="joy" type="joy_node" output="screen"/>
   <node name="joy_to_twist" pkg="amr_hw_control" type="joy_to_twist" output="screen"/>
   <node name="twist_to_speed" pkg="amr_hw_control" type="twist_to_speed" output="screen"/>
-  <node name="angular_to_odom" pkg="amr_hw_control" type="angular_position_to_odom" output="screen"/>
+  <node name="angular_to_odom" pkg="amr_hw_control" type="angular_position_to_odom" output="screen">
+    <remap from="/odom" to="/hweel_odom"/>
+  </node>
 
-  <rosparam command="load" file="$(find amr_hw_control)/config/params.yaml"/>
+
 
   <arg name="model" default="$(find amr_hw_control)/urdf/robot_model.urdf" />
-  <arg name="gui" default="true" />
-  <arg name="rvizconfig" default="$(find amr_hw_control)/rviz/urdf.rviz" />
-
   <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
-  <param name="use_gui" value="$(arg gui)"/>
-
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
-
-  <param name="s_on" value="1"/>
-
-
 
 </launch>
