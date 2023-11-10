@@ -129,7 +129,7 @@
   <link name="lidar_base">
     <visual>
       <geometry>
-        <box size="0.1 0.1 0.1"/>
+        <box size="0.1 0.1 1.0"/>
       </geometry>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <material name="yellow">
@@ -173,8 +173,9 @@
     </inertial>
   </link>
 
-  <link name="velodyne"/>
+
   <link name="livox_frame"/>
+  <link name="imu_link"/>
 
 <!-- ################# ジョイント設定 ################## -->
 
@@ -211,27 +212,29 @@
 	</joint>
 
 	<joint name="lidar_base_joint" type="fixed">
-    <origin xyz="0.0 0.0 0.125" rpy="0 0 0"/>
+    <origin xyz="0.0 0.0 0.5" rpy="0 0 0"/>
     <parent link="frame"/>
     <child link="lidar_base"/>
 	</joint>
 
 	<joint name="lidar_joint" type="fixed">
-    <origin xyz="0.0 0.0 1.25" rpy="0 0 0"/>
+    <origin xyz="0.0 0.0 1.0" rpy="0 0 0"/>
     <parent link="frame"/>
     <child link="laser"/>
 	</joint>
 
-  <joint name="velodyne_joint" type="fixed">
-    <parent link="laser"/>
-    <child link="velodyne"/>
-    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-  </joint>
+
 
   <joint name="livox_joint" type="fixed">
     <parent link="laser"/>
     <child link="livox_frame"/>
-    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.6108 0.0"/>
+  </joint>
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="laser"/>
+    <child link="imu_link"/>
+    <origin xyz="0.0 0.1 0.0" rpy="0.0 3.14 0.0"/>
   </joint>
 
 </robot>

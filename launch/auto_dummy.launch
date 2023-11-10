@@ -1,0 +1,16 @@
+<launch>
+
+  <param name="s_on" value="1"/>
+  <node name="init_motor" pkg="amr_hw_control" type="bringup_motor.py" output="screen"/>
+
+
+  <rosparam command="load" file="$(find amr_hw_control)/config/params.yaml"/>
+  <node name="twist_to_speed" pkg="amr_hw_control" type="twist_to_speed" output="screen"/>
+  <node name="dummy_node" pkg="amr_hw_control" type="dummy.py" output="screen"/>
+  <node name="angular_to_odom" pkg="amr_hw_control" type="angular_position_to_odom" output="screen"/>
+
+  <arg name="model" default="$(find amr_hw_control)/urdf/robot_model.urdf" />
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+</launch>
