@@ -7,14 +7,10 @@
 
 
   <rosparam command="load" file="$(find amr_hw_control)/config/params.yaml"/>
-  <node name="joy_pub" pkg="joy" type="joy_node" output="screen"/>
-  <node name="joy_to_twist" pkg="amr_hw_control" type="joy_to_twist" output="screen"/>
   <node name="twist_to_speed" pkg="amr_hw_control" type="twist_to_speed" output="screen"/>
   <node name="angular_to_odom" pkg="amr_hw_control" type="angular_position_to_odom" output="screen">
     <remap from="/odom" to="/hweel_odom"/>
   </node>
-
-
 
   <arg name="model" default="$(find amr_hw_control)/urdf/robot_model.urdf" />
   <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
