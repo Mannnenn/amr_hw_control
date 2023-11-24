@@ -6,6 +6,8 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /TF1
+        - /TF1/Frames1
         - /TFTrajectory1
       Splitter Ratio: 0.5
     Tree Height: 627
@@ -62,54 +64,11 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        caster_backward:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        caster_forward:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        laser:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lidar_base:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        livox_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        wheel_left:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        wheel_right:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: true
     - Class: rviz/TF
       Enabled: true
@@ -117,25 +76,31 @@ Visualization Manager:
       Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         base_link:
           Value: true
         caster_backward:
-          Value: true
+          Value: false
         caster_forward:
-          Value: true
+          Value: false
         frame:
-          Value: true
+          Value: false
+        imu_link:
+          Value: false
         laser:
-          Value: true
+          Value: false
         lidar_base:
-          Value: true
+          Value: false
+        line_link:
+          Value: false
         livox_frame:
+          Value: false
+        pcl_link:
           Value: true
         wheel_left:
-          Value: true
+          Value: false
         wheel_right:
-          Value: true
+          Value: false
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -145,19 +110,16 @@ Visualization Manager:
       Tree:
         base_link:
           frame:
-            caster_backward:
-              {}
-            caster_forward:
-              {}
+            caster_backward: {}
+            caster_forward: {}
             laser:
-              livox_frame:
-                {}
-            lidar_base:
-              {}
-            wheel_left:
-              {}
-            wheel_right:
-              {}
+              imu_link: {}
+              livox_frame: {}
+            lidar_base: {}
+            wheel_left: {}
+            wheel_right: {}
+          line_link: {}
+          pcl_link: {}
       Update Interval: 0
       Value: true
     - Alpha: 0.699999988079071
@@ -262,7 +224,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.864633083343506
+      Distance: 0.9380993843078613
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -270,17 +232,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -0.08569728583097458
-        Y: -0.11594639718532562
-        Z: 0.5010213255882263
+        X: -0.36888065934181213
+        Y: 0.19968952238559723
+        Z: 0.30925270915031433
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.39539846777915955
+      Pitch: 0.7103980183601379
       Target Frame: <Fixed Frame>
-      Yaw: 1.5404032468795776
+      Yaw: 2.985403060913086
     Saved: ~
 Window Geometry:
   Displays:

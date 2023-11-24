@@ -176,7 +176,6 @@
 
   <link name="livox_frame"/>
   <link name="imu_link"/>
-  <link name="line_link"/>
   <link name="pcl_link"/>
 
 <!-- ################# ジョイント設定 ################## -->
@@ -239,15 +238,10 @@
     <origin xyz="0.0 0.1 0.0" rpy="0.0 3.14 0.0"/>
   </joint>
 
-  <joint name="line_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="line_link"/>
-    <origin xyz="0.0 0.0 0.1" rpy="0.0  0.0 -1.57"/>
-  </joint>
 
   <joint name="pcl_joint" type="fixed">
     <parent link="base_link"/>
     <child link="pcl_link"/>
-    <origin xyz="0.0 0.0 0.0" rpy="0.0  0.0 -3.14"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0.0  0.0 4.712"/>
   </joint>
 </robot>
